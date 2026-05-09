@@ -15,7 +15,7 @@ const app = express();
 // MIDDLEWARE
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
+    origin: "https://hrms-ochre-six.vercel.app/",
     credentials: true,
   })
 );
