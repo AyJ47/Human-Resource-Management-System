@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
+const createAdmin = require("./seed/createAdmin");
+
 const authRoutes = require("./routes/authRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
@@ -12,39 +14,37 @@ dotenv.config();
 
 const app = express();
 
-// MIDDLEWARE
 app.use(
   cors({
-    origin: "https://hrms-ochre-six.vercel.app/",
+    origin: "https://hrms-ochre-six.vercel.app", // ✅ removed trailing slash
     credentials: true,
   })
 );
+
 app.use(express.json());
 
-// ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves", leaveRoutes);
 
-// DATABASE
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB connected");
-  })
-  .catch((err) => {
-    console.log("DB connection error:", err);
-  });
-
-// TEST ROUTE
 app.get("/", (req, res) => {
   res.send("HRMS Server Running");
 });
 
-// SERVER
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(async () => {
+    console.log("MongoDB connected");
+
+    await createAdmin();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log("DB connection error:", err);
+  });
