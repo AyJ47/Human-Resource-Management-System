@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -17,47 +17,65 @@ function App() {
 
   return (
     <BrowserRouter>
-      {token && <Navbar />}
+      {token && <Sidebar />}
 
-      <Routes>
-        <Route path="/login" element={<Login />} />
+      {/* 
+         1. md:ml-64 handles the sidebar offset
+         2. min-h-screen ensures the background covers the whole height
+         3. transition-all makes the shift smooth if the sidebar toggles
+      */}
+      <div
+        className={`${
+          token ? "md:ml-64" : ""
+        } min-h-screen bg-slate-50 transition-all duration-300`}
+      >
+        {/* 
+           This inner wrapper centers the content:
+           - max-w-7xl: Prevents the dashboard from becoming too wide on huge screens
+           - mx-auto: Centers the container
+        */}
+        <div className="max-w-7xl mx-auto">
+          <Routes>
+            <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
 
-        <Route
-          path="/employees"
-          element={
-            <PrivateRoute>
-              <Employees />
-            </PrivateRoute>
-          }
-        />
+            <Route
+              path="/employees"
+              element={
+                <PrivateRoute>
+                  <Employees />
+                </PrivateRoute>
+              }
+            />
 
-        <Route
-          path="/attendance"
-          element={
-            <PrivateRoute>
-              <Attendance />
-            </PrivateRoute>
-          }
-        />
+            <Route
+              path="/attendance"
+              element={
+                <PrivateRoute>
+                  <Attendance />
+                </PrivateRoute>
+              }
+            />
 
-        <Route
-          path="/leaves"
-          element={
-            <PrivateRoute>
-              <Leaves />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
+            <Route
+              path="/leaves"
+              element={
+                <PrivateRoute>
+                  <Leaves />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </div>
     </BrowserRouter>
   );
 }

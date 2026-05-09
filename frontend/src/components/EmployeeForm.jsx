@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const EmployeeForm = ({ onSubmit, editingEmployee }) => {
+const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
   const [formData, setFormData] = useState({
     userId: "",
     department: "",
@@ -14,107 +14,135 @@ const EmployeeForm = ({ onSubmit, editingEmployee }) => {
     if (editingEmployee) {
       setFormData({
         userId: editingEmployee.userId?._id || "",
-
         department: editingEmployee.department || "",
-
         position: editingEmployee.position || "",
-
         phone: editingEmployee.phone || "",
-
         joinDate: editingEmployee.joinDate?.split("T")[0] || "",
-
         salary: editingEmployee.salary || "",
       });
     }
   }, [editingEmployee]);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    onSubmit(formData);
-
-    if (!editingEmployee) {
-      setFormData({
-        userId: "",
-        department: "",
-        position: "",
-        phone: "",
-        joinDate: "",
-        salary: "",
-      });
-    }
-  };
+  const inputClass =
+    "w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all placeholder:text-slate-400";
+  const labelClass =
+    "text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5 block";
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-6">
-      <h2 className="text-xl font-bold mb-4">
-        {editingEmployee ? "Edit Employee" : "Add Employee"}
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+      <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+        {editingEmployee
+          ? "⚡ Edit Member Profile"
+          : "➕ Register New Employee"}
       </h2>
 
-      <input
-        type="text"
-        name="userId"
-        placeholder="User ID"
-        value={formData.userId}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(formData);
+        }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <div>
+          <label className={labelClass}>User ID Reference</label>
+          <input
+            type="text"
+            name="userId"
+            placeholder="Enter MongoDB ID"
+            value={formData.userId}
+            onChange={(e) =>
+              setFormData({ ...formData, userId: e.target.value })
+            }
+            className={inputClass}
+            required
+          />
+        </div>
+        <div>
+          <label className={labelClass}>Department</label>
+          <input
+            type="text"
+            name="department"
+            placeholder="e.g. Engineering"
+            value={formData.department}
+            onChange={(e) =>
+              setFormData({ ...formData, department: e.target.value })
+            }
+            className={inputClass}
+            required
+          />
+        </div>
+        <div>
+          <label className={labelClass}>Job Position</label>
+          <input
+            type="text"
+            name="position"
+            placeholder="e.g. Senior Lead"
+            value={formData.position}
+            onChange={(e) =>
+              setFormData({ ...formData, position: e.target.value })
+            }
+            className={inputClass}
+            required
+          />
+        </div>
+        <div>
+          <label className={labelClass}>Phone Number</label>
+          <input
+            type="text"
+            name="phone"
+            placeholder="+1 (555) 000-0000"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
+            }
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className={labelClass}>Joining Date</label>
+          <input
+            type="date"
+            name="joinDate"
+            value={formData.joinDate}
+            onChange={(e) =>
+              setFormData({ ...formData, joinDate: e.target.value })
+            }
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className={labelClass}>Annual Salary ($)</label>
+          <input
+            type="number"
+            name="salary"
+            placeholder="80000"
+            value={formData.salary}
+            onChange={(e) =>
+              setFormData({ ...formData, salary: e.target.value })
+            }
+            className={inputClass}
+          />
+        </div>
 
-      <input
-        type="text"
-        name="department"
-        placeholder="Department"
-        value={formData.department}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
-
-      <input
-        type="text"
-        name="position"
-        placeholder="Position"
-        value={formData.position}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
-
-      <input
-        type="text"
-        name="phone"
-        placeholder="Phone"
-        value={formData.phone}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
-
-      <input
-        type="date"
-        name="joinDate"
-        value={formData.joinDate}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
-
-      <input
-        type="number"
-        name="salary"
-        placeholder="Salary"
-        value={formData.salary}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
-
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2">
-        {editingEmployee ? "Update" : "Add"}
-      </button>
-    </form>
+        <div className="lg:col-span-3 flex justify-end gap-3 mt-2">
+          {editingEmployee && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-6 py-3 font-bold text-slate-500 hover:text-slate-700 transition-colors"
+            >
+              Cancel
+            </button>
+          )}
+          <button
+            type="submit"
+            className="px-10 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95"
+          >
+            {editingEmployee ? "Save Changes" : "Create Profile"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

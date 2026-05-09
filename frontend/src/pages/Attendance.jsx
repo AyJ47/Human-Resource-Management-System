@@ -1,33 +1,23 @@
 import { useEffect, useState } from "react";
-
 import axios from "../utils/axios";
-
 import { useAuth } from "../context/AuthContext";
-
 import MarkAttendance from "../components/MarkAttendance";
-
 import AttendanceRecords from "../components/AttendanceRecords";
-
 import toast from "react-hot-toast";
 
 const Attendance = () => {
   const { user } = useAuth();
-
   const [records, setRecords] = useState([]);
-
   const [employeeId, setEmployeeId] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   const fetchAttendance = async () => {
     try {
       setLoading(true);
-
       const response = await axios.get("/attendance");
-
       setRecords(response.data);
     } catch (error) {
-      toast.error("Failed to fetch attendance");
+      toast.error("Failed to load records");
     } finally {
       setLoading(false);
     }
@@ -36,16 +26,12 @@ const Attendance = () => {
   const fetchEmployee = async () => {
     try {
       const employees = await axios.get("/employees");
-
       const employee = employees.data.find(
         (emp) => emp.userId?._id === user.id
       );
-
-      if (employee) {
-        setEmployeeId(employee._id);
-      }
+      if (employee) setEmployeeId(employee._id);
     } catch (error) {
-      toast.error("Failed to fetch employee");
+      console.error("Employee check failed");
     }
   };
 
@@ -55,16 +41,34 @@ const Attendance = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Attendance</h1>
+    <div className="p-4 md:p-8 bg-slate-50 min-h-screen">
+      <header className="mb-8">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          Attendance
+        </h1>
+        <p className="text-slate-500">Track and manage daily work logs</p>
+      </header>
 
-      {loading && <p className="mb-4">Loading...</p>}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Action Sidebar */}
+        {/* <div className="lg:col-span-1">
+          {employeeId && (
+            <MarkAttendance
+              employeeId={employeeId}
+              onSuccess={fetchAttendance}
+            />
+          )}
+        </div> */}
 
-      {employeeId && (
-        <MarkAttendance employeeId={employeeId} onSuccess={fetchAttendance} />
-      )}
-
-      <AttendanceRecords records={records} isAdmin={user?.role === "admin"} />
+        {/* Records Table */}
+        <div className="lg:col-span-3">
+          <AttendanceRecords
+            records={records}
+            isAdmin={user?.role === "admin"}
+            loading={loading}
+          />
+        </div>
+      </div>
     </div>
   );
 };

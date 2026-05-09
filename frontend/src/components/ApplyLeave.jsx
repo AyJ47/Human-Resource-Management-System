@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import axios from "axios";
+import axios from "../utils/axios";
 
 const ApplyLeave = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -8,65 +8,91 @@ const ApplyLeave = ({ onSuccess }) => {
     endDate: "",
     reason: "",
   });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
-      await axios.post("http://localhost:3000/api/leaves/apply", formData);
-
-      alert("Leave applied");
-
-      setFormData({
-        startDate: "",
-        endDate: "",
-        reason: "",
-      });
-
+      await axios.post("/leaves/apply", formData);
+      toast.success("Application submitted successfully");
+      setFormData({ startDate: "", endDate: "", reason: "" });
       onSuccess();
     } catch (error) {
-      console.log(error);
+      toast.error("Error submitting application");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const inputClass =
+    "w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all";
+
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-6">
-      <h2 className="text-xl font-bold mb-4">Apply Leave</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 sticky top-8"
+    >
+      <h2 className="text-lg font-bold text-slate-800 mb-6">New Request</h2>
 
-      <input
-        type="date"
-        name="startDate"
-        value={formData.startDate}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
+      <div className="space-y-4">
+        <div>
+          <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">
+            Start Date
+          </label>
+          <input
+            type="date"
+            name="startDate"
+            value={formData.startDate}
+            onChange={(e) =>
+              setFormData({ ...formData, startDate: e.target.value })
+            }
+            className={inputClass}
+            required
+          />
+        </div>
 
-      <input
-        type="date"
-        name="endDate"
-        value={formData.endDate}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
+        <div>
+          <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">
+            End Date
+          </label>
+          <input
+            type="date"
+            name="endDate"
+            value={formData.endDate}
+            onChange={(e) =>
+              setFormData({ ...formData, endDate: e.target.value })
+            }
+            className={inputClass}
+            required
+          />
+        </div>
 
-      <textarea
-        name="reason"
-        placeholder="Reason"
-        value={formData.reason}
-        onChange={handleChange}
-        className="border p-2 w-full mb-3"
-      />
+        <div>
+          <label className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 block">
+            Reason
+          </label>
+          <textarea
+            name="reason"
+            placeholder="Briefly describe your reason..."
+            rows="3"
+            value={formData.reason}
+            onChange={(e) =>
+              setFormData({ ...formData, reason: e.target.value })
+            }
+            className={inputClass}
+            required
+          />
+        </div>
 
-      <button type="submit" className="bg-blue-500 text-white px-4 py-2">
-        Apply
-      </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-50"
+        >
+          {loading ? "Sending..." : "Submit Application"}
+        </button>
+      </div>
     </form>
   );
 };
