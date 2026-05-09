@@ -1,4 +1,5 @@
 import axios from "../utils/axios";
+import toast from "react-hot-toast";
 
 const LeaveRequests = ({ leaves, refreshLeaves }) => {
   const updateStatus = async (id, status) => {
@@ -43,46 +44,61 @@ const LeaveRequests = ({ leaves, refreshLeaves }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {leaves.map((leave) => (
-              <tr
-                key={leave._id}
-                className="hover:bg-slate-50/50 transition-colors"
-              >
-                <td className="px-6 py-4 font-semibold text-slate-700">
-                  {leave.employeeId?.userId?.name}
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
-                  {new Date(leave.startDate).toLocaleDateString()} -{" "}
-                  {new Date(leave.endDate).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 text-sm text-slate-500 max-w-xs truncate">
-                  {leave.reason}
-                </td>
-                <td className="px-6 py-4">
-                  <span className={getStatusBadge(leave.status)}>
-                    {leave.status.toUpperCase()}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex justify-center gap-2">
-                    <button
-                      onClick={() => updateStatus(leave._id, "approved")}
-                      className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                      title="Approve"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => updateStatus(leave._id, "rejected")}
-                      className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                      title="Reject"
-                    >
-                      Reject
-                    </button>
-                  </div>
+            {leaves.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="px-6 py-10 text-center text-slate-400"
+                >
+                  No leave requests found.
                 </td>
               </tr>
-            ))}
+            ) : (
+              leaves.map((leave) => (
+                <tr
+                  key={leave._id}
+                  className="hover:bg-slate-50/50 transition-colors"
+                >
+                  <td className="px-6 py-4 font-semibold text-slate-700">
+                    {leave.employeeId?.userId?.name || "Unknown"}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
+                    {new Date(leave.startDate).toLocaleDateString()} –{" "}
+                    {new Date(leave.endDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-500 max-w-xs truncate">
+                    {leave.reason}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={getStatusBadge(leave.status)}>
+                      {leave.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {leave.status === "pending" ? (
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => updateStatus(leave._id, "approved")}
+                          className="px-3 py-1.5 text-sm font-bold text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => updateStatus(leave._id, "rejected")}
+                          className="px-3 py-1.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-center text-xs text-slate-400 italic">
+                        Resolved
+                      </p>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

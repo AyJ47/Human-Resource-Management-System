@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 
 const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
   const [formData, setFormData] = useState({
-    userId: "",
+    name: "",
+    email: "",
+    password: "",
     department: "",
     position: "",
     phone: "",
@@ -13,15 +15,44 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
   useEffect(() => {
     if (editingEmployee) {
       setFormData({
-        userId: editingEmployee.userId?._id || "",
+        name: editingEmployee.userId?.name || "",
+        email: editingEmployee.userId?.email || "",
+        password: "",
         department: editingEmployee.department || "",
         position: editingEmployee.position || "",
         phone: editingEmployee.phone || "",
         joinDate: editingEmployee.joinDate?.split("T")[0] || "",
         salary: editingEmployee.salary || "",
       });
+    } else {
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        department: "",
+        position: "",
+        phone: "",
+        joinDate: "",
+        salary: "",
+      });
     }
   }, [editingEmployee]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    if (editingEmployee) {
+      // Only send employee profile fields when editing (not user account fields)
+      const { department, position, phone, joinDate, salary } = formData;
+      onSubmit({ department, position, phone, joinDate, salary });
+    } else {
+      onSubmit(formData);
+    }
+  };
 
   const inputClass =
     "w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all placeholder:text-slate-400";
@@ -37,26 +68,53 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
       </h2>
 
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit(formData);
-        }}
+        onSubmit={handleFormSubmit}
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        <div>
-          <label className={labelClass}>User ID Reference</label>
-          <input
-            type="text"
-            name="userId"
-            placeholder="Enter MongoDB ID"
-            value={formData.userId}
-            onChange={(e) =>
-              setFormData({ ...formData, userId: e.target.value })
-            }
-            className={inputClass}
-            required
-          />
-        </div>
+        {/* User account fields — only shown when creating new */}
+        {!editingEmployee && (
+          <>
+            <div>
+              <label className={labelClass}>Full Name</label>
+              <input
+                type="text"
+                name="name"
+                placeholder="e.g. John Doe"
+                value={formData.name}
+                onChange={handleChange}
+                className={inputClass}
+                required
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Email Address</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="john@company.com"
+                value={formData.email}
+                onChange={handleChange}
+                className={inputClass}
+                required
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Min. 6 characters"
+                value={formData.password}
+                onChange={handleChange}
+                className={inputClass}
+                required
+                minLength={6}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Employee profile fields — always shown */}
         <div>
           <label className={labelClass}>Department</label>
           <input
@@ -64,9 +122,7 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
             name="department"
             placeholder="e.g. Engineering"
             value={formData.department}
-            onChange={(e) =>
-              setFormData({ ...formData, department: e.target.value })
-            }
+            onChange={handleChange}
             className={inputClass}
             required
           />
@@ -78,9 +134,7 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
             name="position"
             placeholder="e.g. Senior Lead"
             value={formData.position}
-            onChange={(e) =>
-              setFormData({ ...formData, position: e.target.value })
-            }
+            onChange={handleChange}
             className={inputClass}
             required
           />
@@ -92,9 +146,7 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
             name="phone"
             placeholder="+1 (555) 000-0000"
             value={formData.phone}
-            onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
-            }
+            onChange={handleChange}
             className={inputClass}
           />
         </div>
@@ -104,9 +156,7 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
             type="date"
             name="joinDate"
             value={formData.joinDate}
-            onChange={(e) =>
-              setFormData({ ...formData, joinDate: e.target.value })
-            }
+            onChange={handleChange}
             className={inputClass}
           />
         </div>
@@ -117,9 +167,7 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
             name="salary"
             placeholder="80000"
             value={formData.salary}
-            onChange={(e) =>
-              setFormData({ ...formData, salary: e.target.value })
-            }
+            onChange={handleChange}
             className={inputClass}
           />
         </div>
@@ -138,7 +186,7 @@ const EmployeeForm = ({ onSubmit, editingEmployee, onCancel }) => {
             type="submit"
             className="px-10 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95"
           >
-            {editingEmployee ? "Save Changes" : "Create Profile"}
+            {editingEmployee ? "Save Changes" : "Create Employee"}
           </button>
         </div>
       </form>

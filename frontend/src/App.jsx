@@ -1,7 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
-
 import PrivateRoute from "./components/PrivateRoute";
 
 import Login from "./pages/Login";
@@ -19,24 +18,20 @@ function App() {
     <BrowserRouter>
       {token && <Sidebar />}
 
-      {/* 
-         1. md:ml-64 handles the sidebar offset
-         2. min-h-screen ensures the background covers the whole height
-         3. transition-all makes the shift smooth if the sidebar toggles
-      */}
       <div
         className={`${
           token ? "md:ml-64" : ""
         } min-h-screen bg-slate-50 transition-all duration-300`}
       >
-        {/* 
-           This inner wrapper centers the content:
-           - max-w-7xl: Prevents the dashboard from becoming too wide on huge screens
-           - mx-auto: Centers the container
-        */}
         <div className="max-w-7xl mx-auto">
           <Routes>
             <Route path="/login" element={<Login />} />
+
+            {/* Root redirect */}
+            <Route
+              path="/"
+              element={<Navigate to="/dashboard" replace />}
+            />
 
             <Route
               path="/dashboard"
@@ -72,6 +67,12 @@ function App() {
                   <Leaves />
                 </PrivateRoute>
               }
+            />
+
+            {/* Catch-all redirect */}
+            <Route
+              path="*"
+              element={<Navigate to="/dashboard" replace />}
             />
           </Routes>
         </div>

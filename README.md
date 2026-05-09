@@ -1,355 +1,211 @@
-# HRMS - Human Resource Management System
+# HRMS — Human Resource Management System
 
-A full-stack MERN (MongoDB, Express.js, React.js, Node.js) based Human Resource Management System (HRMS) application with authentication, employee management, attendance tracking, leave management, and dashboard analytics.
+A full-stack MERN (MongoDB, Express.js, React.js, Node.js) based Human Resource Management System with authentication, employee management, attendance tracking, leave management, and dashboard analytics.
 
 ---
 
-# Features
+## Features
 
-## Authentication Module
-
+### Authentication Module
 - User Login & Logout
 - JWT-based Authentication
-- Role-Based Access Control
-
-  - Admin
-  - Employee
-
+- Role-Based Access Control (Admin / Employee)
 - Protected Routes
 - Persistent Login using Local Storage
 
----
+### Employee Management
+**Admin:** Add, Edit, Delete, and View Employees (fully from UI — no MongoDB access needed)
+**Employee:** View Employee Directory
 
-## Employee Management
+### Attendance Management
+- Mark Attendance (Present / Absent / Late)
+- Duplicate check — prevents double marking per day
+- Admin: View all attendance, mark for any employee
+- Employee: View own attendance, mark own attendance
 
-### Admin Features
+### Leave Management
+**Employee:** Apply for Leave, View Leave History
+**Admin:** View All Requests, Approve / Reject
 
-- Add Employee
-- Edit Employee
-- Delete Employee
-- View Employee List
-
-### Employee Features
-
-- View Employee Records
-
----
-
-## Attendance Management
-
-- Mark Attendance
-- Attendance Status:
-
-  - Present
-  - Absent
-  - Late
-
-- View Attendance Records
-- Admin can view all attendance
-- Employees can view only their own attendance
+### Dashboard
+**Admin:** Total Employees, Today's Attendance, Pending Leaves, Total Leave Requests
+**Employee:** Attendance count, Leave Requests, Pending Leaves
 
 ---
 
-## Leave Management
+## Tech Stack
 
-### Employee Features
-
-- Apply for Leave
-- View Leave History
-
-### Admin Features
-
-- View All Leave Requests
-- Approve Leave Requests
-- Reject Leave Requests
+| Layer     | Technology                                                    |
+| --------- | ------------------------------------------------------------- |
+| Frontend  | React.js, Vite, Tailwind CSS v4, Axios, React Router DOM v7  |
+| Backend   | Node.js, Express.js v5, JWT, Bcrypt.js, Mongoose              |
+| Database  | MongoDB Atlas                                                 |
+| Deploy    | Vercel (frontend) + Render (backend)                          |
 
 ---
 
-## Dashboard
+## Folder Structure
 
-### Admin Dashboard
-
-- Total Employees
-- Attendance Summary
-- Pending Leave Requests
-
-### Employee Dashboard
-
-- Personal Attendance Summary
-- Leave Summary
-
----
-
-## UI/UX Features
-
-- Responsive Design
-- Mobile Sidebar Navigation
-- Toast Notifications
-- Loading States
-- Form Validation
-- Modern Tailwind UI
-
----
-
-# Tech Stack
-
-## Frontend
-
-- React.js
-- React Router DOM
-- Tailwind CSS
-- Axios
-- React Hot Toast
-- React Icons
-
----
-
-## Backend
-
-- Node.js
-- Express.js
-- JWT Authentication
-- Bcrypt.js
-- Mongoose
-
----
-
-## Database
-
-- MongoDB Atlas
-
----
-
-# Folder Structure
-
-```bash
+```
 HRMS/
-│
 ├── backend/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
+│   ├── middleware/       # authMiddleware, adminMiddleware
+│   ├── models/           # User, Employee, Attendance, Leave
+│   ├── routes/           # authRoutes, employeeRoutes, attendanceRoutes, leaveRoutes
 │   ├── server.js
-│   └── .env
+│   ├── .env              # (git-ignored) — see .env.example
+│   └── .env.example
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── pages/
-│   │   ├── utils/
+│   │   ├── components/   # Sidebar, StatCard, EmployeeForm, MarkAttendance, etc.
+│   │   ├── context/      # AuthContext
+│   │   ├── pages/        # Login, Dashboard, Employees, Attendance, Leaves
+│   │   ├── utils/        # axios instance with interceptors
 │   │   ├── App.jsx
 │   │   └── main.jsx
-│   └── tailwind.config.js
+│   ├── .env.example
+│   └── vite.config.js
 │
 └── README.md
 ```
 
 ---
 
-# Installation & Setup
+## Installation & Setup
 
-## 1. Clone Repository
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/AyJ47/Human-Resource-Management-System
 ```
 
----
-
-# Backend Setup
-
-## 2. Navigate to Backend Folder
+### 2. Backend Setup
 
 ```bash
 cd backend
-```
-
----
-
-## 3. Install Dependencies
-
-```bash
 npm install
 ```
 
----
+Create a `.env` file using the template:
 
-## 4. Create .env File
+```bash
+cp .env.example .env
+```
 
-Create a `.env` file inside the backend folder:
+Then fill in your actual values:
 
----
+```env
+PORT=3000
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>
+JWT_SECRET=your_strong_random_secret
+CORS_ORIGIN=*
+```
 
-## 5. Run Backend Server
+> ⚠️ **Never commit your `.env` file.** It contains database credentials and secrets. The `.gitignore` already excludes it.
+
+Start the backend:
 
 ```bash
 npm run dev
 ```
 
-Backend runs on:
-
-```bash
-http://localhost:3000
-```
-
----
-
-# Frontend Setup
-
-## 6. Navigate to Frontend Folder
+### 3. Frontend Setup
 
 ```bash
 cd frontend
-```
-
----
-
-## 7. Install Dependencies
-
-```bash
 npm install
 ```
 
----
+Create a `.env` file:
 
-## 8. Run Frontend
+```bash
+cp .env.example .env
+```
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+Start the frontend:
 
 ```bash
 npm run dev
 ```
 
-Frontend runs on:
+---
 
-```bash
-http://localhost:5173
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint           | Description          | Auth     |
+| ------ | ------------------ | -------------------- | -------- |
+| POST   | /api/auth/register | Register User        | Public   |
+| POST   | /api/auth/login    | Login User           | Public   |
+| GET    | /api/auth/me       | Get current profile  | Required |
+
+### Employees
+
+| Method | Endpoint              | Description             | Auth          |
+| ------ | --------------------- | ----------------------- | ------------- |
+| GET    | /api/employees        | Get all employees       | Required      |
+| GET    | /api/employees/me     | Get own employee record | Required      |
+| POST   | /api/employees        | Create employee + user  | Admin only    |
+| PUT    | /api/employees/:id    | Update employee profile | Admin only    |
+| DELETE | /api/employees/:id    | Delete employee + data  | Admin only    |
+
+### Attendance
+
+| Method | Endpoint              | Description         | Auth     |
+| ------ | --------------------- | ------------------- | -------- |
+| POST   | /api/attendance/mark  | Mark attendance     | Required |
+| GET    | /api/attendance       | Get attendance      | Required |
+
+### Leaves
+
+| Method | Endpoint                | Description          | Auth       |
+| ------ | ----------------------- | -------------------- | ---------- |
+| POST   | /api/leaves/apply       | Apply for leave      | Required   |
+| GET    | /api/leaves             | Get leaves           | Required   |
+| PATCH  | /api/leaves/:id/status  | Approve/Reject leave | Admin only |
+
+---
+
+## Deployment
+
+### Frontend (Vercel)
+
+1. Connect the `frontend/` directory to Vercel
+2. Set environment variable: `VITE_API_URL` = your Render backend URL + `/api`
+
+### Backend (Render)
+
+1. Connect the `backend/` directory to Render
+2. Set environment variables:
+   - `MONGO_URI` — your MongoDB Atlas connection string
+   - `JWT_SECRET` — a strong random secret
+   - `CORS_ORIGIN` — your Vercel frontend URL (e.g. `https://your-app.vercel.app`)
+   - `PORT` — Render sets this automatically
+
+> ⚠️ **Security:** Never expose `MONGO_URI` or `JWT_SECRET` in client-side code, git history, or public documentation. Use environment variables exclusively.
+
+---
+
+## Demo Credentials
+
+```
+Admin:   admin@gmail.com / 123456
 ```
 
 ---
 
-# API Endpoints
-
-# Authentication Routes
-
-| Method | Endpoint           | Description   |
-| ------ | ------------------ | ------------- |
-| POST   | /api/auth/register | Register User |
-| POST   | /api/auth/login    | Login User    |
-
----
-
-# Employee Routes
-
-| Method | Endpoint           | Description     |
-| ------ | ------------------ | --------------- |
-| GET    | /api/employees     | Get Employees   |
-| POST   | /api/employees     | Create Employee |
-| PUT    | /api/employees/:id | Update Employee |
-| DELETE | /api/employees/:id | Delete Employee |
-
----
-
-# Attendance Routes
-
-| Method | Endpoint             | Description     |
-| ------ | -------------------- | --------------- |
-| POST   | /api/attendance/mark | Mark Attendance |
-| GET    | /api/attendance      | Get Attendance  |
-
----
-
-# Leave Routes
-
-| Method | Endpoint               | Description         |
-| ------ | ---------------------- | ------------------- |
-| POST   | /api/leaves/apply      | Apply Leave         |
-| GET    | /api/leaves            | Get Leaves          |
-| PATCH  | /api/leaves/:id/status | Update Leave Status |
-
----
-
-# Authentication Flow
-
-1. User logs in
-2. Backend validates credentials
-3. JWT token generated
-4. Token stored in localStorage
-5. Axios interceptor attaches token automatically
-6. Protected routes verify token
-
----
-
-# Role-Based Access
-
-## Admin
-
-Can:
-
-- Manage Employees
-- View All Attendance
-- Approve/Reject Leaves
-- View Dashboard Analytics
-
----
-
-## Employee
-
-Can:
-
-- Mark Attendance
-- Apply for Leave
-- View Own Attendance
-- View Own Leaves
-
----
-
-# Deployment
-
-## Frontend Deployment
-
-Deploy frontend using:
-
-- Vercel
-
----
-
-## Backend Deployment
-
-Deploy backend using:
-
-- Render
-
----
-
-# Demo Credentials
-
-## Admin Login
-
-```bash
-Email: admin@gmail.com
-Password: 123456
-```
-
----
-
-# Future Improvements
-
-- Profile Management
-- Search & Filtering
-- Attendance Charts
-- Email Notifications
-- Payroll Module
-- Dark Mode
-- Export Reports
-
----
-
-# Author
+## Author
 
 Ayush Jadon
 
 ---
 
-# License
+## License
 
 This project is created for educational and internship assignment purposes.

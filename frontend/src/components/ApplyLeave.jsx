@@ -1,6 +1,6 @@
 import { useState } from "react";
-
 import axios from "../utils/axios";
+import toast from "react-hot-toast";
 
 const ApplyLeave = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ const ApplyLeave = ({ onSuccess }) => {
       setFormData({ startDate: "", endDate: "", reason: "" });
       onSuccess();
     } catch (error) {
-      toast.error("Error submitting application");
+      toast.error(error.response?.data?.message || "Error submitting application");
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,7 @@
+import { useState } from "react";
+import axios from "../utils/axios";
+import toast from "react-hot-toast";
+
 const MarkAttendance = ({ employeeId, onSuccess }) => {
   const [status, setStatus] = useState("present");
   const [submitting, setSubmitting] = useState(false);
@@ -10,7 +14,7 @@ const MarkAttendance = ({ employeeId, onSuccess }) => {
       toast.success("Attendance logged successfully");
       onSuccess();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Already marked for today");
+      toast.error(error.response?.data?.message || "Failed to mark attendance");
     } finally {
       setSubmitting(false);
     }
