@@ -16,15 +16,20 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.email || !formData.password) {
       return toast.error("Please enter both email and password");
     }
 
     try {
       setLoading(true);
+
       const response = await axios.post("/auth/login", formData);
+
       login(response.data.token, response.data.user);
+
       toast.success("Welcome back!");
+
       navigate("/dashboard");
     } catch (error) {
       toast.error(error.response?.data?.message || "Invalid credentials");
@@ -36,7 +41,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 px-4">
       <div className="max-w-md w-full">
-        {/* Header Section */}
+        {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
             Sign in to your account
@@ -64,26 +69,21 @@ const Login = () => {
                 name="email"
                 required
                 placeholder="name@company.com"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
                 onChange={handleChange}
               />
             </div>
 
             <div>
-              <div className="flex justify-between mb-1">
-                <label className="text-sm font-semibold text-gray-700">
-                  Password
-                </label>
-                <a href="#" className="text-xs text-blue-600 hover:underline">
-                  Forgot password?
-                </a>
-              </div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Password
+              </label>
               <input
                 type="password"
                 name="password"
                 required
                 placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-gray-400"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
                 onChange={handleChange}
               />
             </div>
@@ -91,49 +91,39 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all ${
-                loading
-                  ? "opacity-70 cursor-not-allowed"
-                  : "active:scale-[0.98]"
-              }`}
+              className="w-full py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all disabled:opacity-70"
             >
-              {loading ? (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              ) : (
-                "Sign In"
-              )}
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
-          {/* Social Divider */}
-          <div className="mt-8 relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
+          {/* 🔥 DEMO LOGIN BOX */}
+          <div className="mt-6 p-4 rounded-lg bg-blue-50 border border-blue-200">
+            <p className="text-sm font-semibold text-blue-700 mb-2">
+              Demo Admin Login
+            </p>
+
+            <div className="text-sm text-gray-700 space-y-1">
+              <p>
+                <span className="font-medium">Email:</span> admin@gmail.com
+              </p>
+              <p>
+                <span className="font-medium">Password:</span> 123456
+              </p>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500 italic">
-                Secure Login
-              </span>
-            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                setFormData({
+                  email: "admin@gmail.com",
+                  password: "123456",
+                })
+              }
+              className="mt-3 text-xs font-medium text-blue-600 hover:underline"
+            >
+              Use these credentials
+            </button>
           </div>
         </div>
 
