@@ -7,6 +7,7 @@ A full-stack MERN (MongoDB, Express.js, React.js, Node.js) based Human Resource 
 ## Features
 
 ### Authentication Module
+
 - User Login & Logout
 - JWT-based Authentication
 - Role-Based Access Control (Admin / Employee)
@@ -14,20 +15,24 @@ A full-stack MERN (MongoDB, Express.js, React.js, Node.js) based Human Resource 
 - Persistent Login using Local Storage
 
 ### Employee Management
+
 **Admin:** Add, Edit, Delete, and View Employees (fully from UI — no MongoDB access needed)
 **Employee:** View Employee Directory
 
 ### Attendance Management
+
 - Mark Attendance (Present / Absent / Late)
 - Duplicate check — prevents double marking per day
 - Admin: View all attendance, mark for any employee
-- Employee: View own attendance, mark own attendance
+- Employee: View own attendance and mark own attendance
 
 ### Leave Management
+
 **Employee:** Apply for Leave, View Leave History
 **Admin:** View All Requests, Approve / Reject
 
 ### Dashboard
+
 **Admin:** Total Employees, Today's Attendance, Pending Leaves, Total Leave Requests
 **Employee:** Attendance count, Leave Requests, Pending Leaves
 
@@ -35,12 +40,12 @@ A full-stack MERN (MongoDB, Express.js, React.js, Node.js) based Human Resource 
 
 ## Tech Stack
 
-| Layer     | Technology                                                    |
-| --------- | ------------------------------------------------------------- |
-| Frontend  | React.js, Vite, Tailwind CSS v4, Axios, React Router DOM v7  |
-| Backend   | Node.js, Express.js v5, JWT, Bcrypt.js, Mongoose              |
-| Database  | MongoDB Atlas                                                 |
-| Deploy    | Vercel (frontend) + Render (backend)                          |
+| Layer    | Technology                                                  |
+| -------- | ----------------------------------------------------------- |
+| Frontend | React.js, Vite, Tailwind CSS v4, Axios, React Router DOM v7 |
+| Backend  | Node.js, Express.js v5, JWT, Bcrypt.js, Mongoose            |
+| Database | MongoDB Atlas                                               |
+| Deploy   | Vercel (frontend) + Render (backend)                        |
 
 ---
 
@@ -139,36 +144,36 @@ npm run dev
 
 ### Authentication
 
-| Method | Endpoint           | Description          | Auth     |
-| ------ | ------------------ | -------------------- | -------- |
-| POST   | /api/auth/register | Register User        | Public   |
-| POST   | /api/auth/login    | Login User           | Public   |
-| GET    | /api/auth/me       | Get current profile  | Required |
+| Method | Endpoint           | Description         | Auth     |
+| ------ | ------------------ | ------------------- | -------- |
+| POST   | /api/auth/register | Register User       | Public   |
+| POST   | /api/auth/login    | Login User          | Public   |
+| GET    | /api/auth/me       | Get current profile | Required |
 
 ### Employees
 
-| Method | Endpoint              | Description             | Auth          |
-| ------ | --------------------- | ----------------------- | ------------- |
-| GET    | /api/employees        | Get all employees       | Required      |
-| GET    | /api/employees/me     | Get own employee record | Required      |
-| POST   | /api/employees        | Create employee + user  | Admin only    |
-| PUT    | /api/employees/:id    | Update employee profile | Admin only    |
-| DELETE | /api/employees/:id    | Delete employee + data  | Admin only    |
+| Method | Endpoint           | Description             | Auth       |
+| ------ | ------------------ | ----------------------- | ---------- |
+| GET    | /api/employees     | Get all employees       | Required   |
+| GET    | /api/employees/me  | Get own employee record | Required   |
+| POST   | /api/employees     | Create employee + user  | Admin only |
+| PUT    | /api/employees/:id | Update employee profile | Admin only |
+| DELETE | /api/employees/:id | Delete employee + data  | Admin only |
 
 ### Attendance
 
-| Method | Endpoint              | Description         | Auth     |
-| ------ | --------------------- | ------------------- | -------- |
-| POST   | /api/attendance/mark  | Mark attendance     | Required |
-| GET    | /api/attendance       | Get attendance      | Required |
+| Method | Endpoint             | Description     | Auth     |
+| ------ | -------------------- | --------------- | -------- |
+| POST   | /api/attendance/mark | Mark attendance | Required |
+| GET    | /api/attendance      | Get attendance  | Required |
 
 ### Leaves
 
-| Method | Endpoint                | Description          | Auth       |
-| ------ | ----------------------- | -------------------- | ---------- |
-| POST   | /api/leaves/apply       | Apply for leave      | Required   |
-| GET    | /api/leaves             | Get leaves           | Required   |
-| PATCH  | /api/leaves/:id/status  | Approve/Reject leave | Admin only |
+| Method | Endpoint               | Description          | Auth       |
+| ------ | ---------------------- | -------------------- | ---------- |
+| POST   | /api/leaves/apply      | Apply for leave      | Required   |
+| GET    | /api/leaves            | Get leaves           | Required   |
+| PATCH  | /api/leaves/:id/status | Approve/Reject leave | Admin only |
 
 ---
 
